@@ -1,7 +1,7 @@
 Package: DeducerExtras
 Type: Package
 Title: Additional dialogs and functions for Deducer
-Version: 1.0
+Version: 1.1
 Date: 2010-08-10
 Author: Ian Fellows
 Maintainer: Ian Fellows <thefell@gmail.com>
@@ -11,6 +11,6 @@ Description: Added functionality for Deducer. This package includes
 Depends: Deducer
 License: GPL-2
 LazyLoad: yes
-Packaged: 2010-08-13 04:25:30 UTC; Ian
+Packaged: 2010-08-13 16:44:42 UTC; Ian
 Repository: CRAN
-Date/Publication: 2010-08-13 05:04:42
+Date/Publication: 2010-08-13 18:49:33
