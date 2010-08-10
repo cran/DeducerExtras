@@ -1,0 +1,85 @@
+
+
+
+
+
+.First.lib <- function(libname, pkgname){
+	
+	.registerDeducerExtraDialog("Distribution quantiles",
+			function() .makeDistributionDialog("quantile"))
+	
+	.registerDeducerExtraDialog("Distribution function values",
+			function() .makeDistributionDialog("distribution"))
+	
+	.registerDeducerExtraDialog("Cumulative distribution function",
+			function() .makeDistributionDialog("CDF"))
+	
+	.registerDeducerExtraDialog("Data summary",.makeSummaryDialog)
+	
+	.registerDeducerExtraDialog("Paired test",.makePairedTestDialog)
+	
+	.registerDeducerExtraDialog("Single proportion",.makeProportionDialog)
+	
+	.registerDeducerExtraDialog("Single proportion: Exact",.makeExactProportionDialog)
+	
+	.registerDeducerExtraDialog("k-sample proportion",.makeNProportionDialog)
+	
+	.registerDeducerExtraDialog("k-sample variance test",.makeEqualVarianceDialog)
+	
+	.registerDeducerExtraDialog("k-means cluster",.makeKMeansDialog)
+	
+	.registerDeducerExtraDialog("Apply k-means to data",.makeApplyKMeansDialog)
+	
+	.registerDeducerExtraDialog("Hierarchical cluster",.makeHClustDialog)
+	
+	.registerDeducerExtraDialog("Multi-dimensional scaling",.makeMDSDialog)
+	
+	.registerDeducerExtraDialog("Factor analysis",.makeFactorAnalysisDialog)
+	
+	gui.addSeperator <- function(){}
+	if(.windowsGUI){
+		winMenuAdd("Extras")
+		gui.addMenuItem <- winMenuAddItem
+	}else if(.jgr){
+		DeducerMain$insertMenu(J("org.rosuda.JGR.JGR")$MAINRCONSOLE, "Extras",6L)
+		#jgr.addMenu("Extras")
+		gui.addMenuItem <- jgr.addMenuItem
+		gui.addSeperator <- function () jgr.addMenuSeparator("Extras")
+	}else
+		gui.addMenuItem <- function(x,y,z){}
+	
+	deducer.addMenu("Extras")
+	
+	'%+%' <- function(x,y) paste(x,y,sep="")
+	
+	addMenuItem <- function(name){
+		deducer.addMenuItem(name,,
+				".getDeducerExtrasDialog('" %+% name %+% "')$run()","Extras")
+		gui.addMenuItem("Extras",name,"deducer('"%+% name %+% "')")
+	}
+	
+	addMenuItem("Distribution quantiles")
+	addMenuItem("Distribution function values")
+	addMenuItem("Cumulative distribution function")
+	gui.addSeperator()
+	addMenuItem("Data summary")
+	gui.addSeperator()
+	addMenuItem("Single proportion")
+	addMenuItem("Single proportion: Exact")
+	addMenuItem("k-sample proportion")
+	gui.addSeperator()
+	addMenuItem("Paired test")	
+	addMenuItem("k-sample variance test")
+	gui.addSeperator()
+	addMenuItem("k-means cluster")
+	addMenuItem("Apply k-means to data")
+	gui.addSeperator()
+	addMenuItem("Hierarchical cluster")
+	gui.addSeperator()
+	addMenuItem("Factor analysis")
+	addMenuItem("Multi-dimensional scaling")
+}
+
+
+
+
