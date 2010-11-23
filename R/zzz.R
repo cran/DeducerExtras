@@ -45,6 +45,8 @@
 	
 	.registerDeducerExtraDialog("k-sample variance test",.makeEqualVarianceDialog)
 	
+	.registerDeducerExtraDialog("t-test power",.makeTTestPowerDialog)
+	
 	.registerDeducerExtraDialog("k-means cluster",.makeKMeansDialog)
 	
 	.registerDeducerExtraDialog("Apply k-means to data",.makeApplyKMeansDialog)
@@ -53,7 +55,6 @@
 	
 	.registerDeducerExtraDialog("Multi-dimensional scaling",.makeMDSDialog)
 	
-	.registerDeducerExtraDialog("Factor analysis",.makeFactorAnalysisDialog)
 	
 	gui.addSeperator <- function(){}
 	if(.windowsGUI){
@@ -81,8 +82,12 @@
 	addMenuItem("Distribution function values")
 	addMenuItem("Cumulative distribution function")
 	gui.addSeperator()
+	deducer.addMenuItem("Load Data From Package",,
+			".makePackageDataDialog()$run()","Extras")
+	gui.addMenuItem("Extras","Load data from package","deducer('"%+% "Load Data From Package" %+% "')")
 	addMenuItem("Data summary")
 	gui.addSeperator()
+
 	addMenuItem("Single proportion")
 	addMenuItem("Single proportion: Exact")
 	addMenuItem("k-sample proportion")
@@ -90,12 +95,12 @@
 	addMenuItem("Paired test")	
 	addMenuItem("k-sample variance test")
 	gui.addSeperator()
+	addMenuItem("t-test power")
+	gui.addSeperator()	
 	addMenuItem("k-means cluster")
 	addMenuItem("Apply k-means to data")
-	gui.addSeperator()
 	addMenuItem("Hierarchical cluster")
 	gui.addSeperator()
-	addMenuItem("Factor analysis")
 	addMenuItem("Multi-dimensional scaling")
 }
 

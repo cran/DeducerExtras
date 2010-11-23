@@ -24,6 +24,32 @@
 	rfd
 }
 
+########################################################################
+#
+#				Load data from package
+#
+########################################################################
+.makePackageDataDialog <- function(){
+	dat <- data()$results
+	RFunction <- J("org.rosuda.deducer.widgets.param.RFunction")
+	RFunctionDialog <- J("org.rosuda.deducer.widgets.param.RFunctionDialog")
+	ParamCharacter <- J("org.rosuda.deducer.widgets.param.ParamCharacter")
+	
+	rf <- new(RFunction,"data")
+	rf$setTitle("Load Data From Package")
+	
+	p <- new(ParamCharacter,"data")
+	p$setTitle("Data set")
+	p$setOptions(dat[,3])
+	p$setLabels(dat[,4])
+	p$setViewType(p$VIEW_COMBO)
+	rf$add(p)
+	
+	rfd <- new(RFunctionDialog, rf)
+	rfd$setSize(250L,125L)
+	rfd$setLocationRelativeTo(.jnull())
+	rfd
+}
 
 
 ########################################################################
@@ -287,7 +313,93 @@
 	rfd
 }
 
-
+########################################################################
+#
+#				t-test power
+#
+########################################################################
+.makeTTestPowerDialog <- function(){
+	status <- .deducer$requirePackage("pwr")
+	if(status=="installed"){
+		execute("library('pwr')")
+	}else if(status=="not-installed"){
+		stop("package pwr required")
+	}
+	dialog <- new(SimpleRDialog)
+	dialog$setSize(350L,580L)
+	dialog$setTitle("t-test power analysis")
+	
+	#type of test
+	test<- new(ComboBoxWidget,"type of test",c("two.sample", "one.sample", "paired"))
+	test$setDefaultModel("two.sample")
+	addComponent(dialog, test,100,900,200, 100)
+	
+	#Sample size
+	ss <- new(TextAreaWidget,"Sample size")
+	addComponent(dialog, ss,210,700,310, 300)
+	
+	#sig
+	sig <- new(TextAreaWidget,"significance level")
+	sig$setDefaultModel("0.05")
+	addComponent(dialog, sig,320,700,420, 300)
+	
+	#power
+	pow <- new(TextAreaWidget,"Power")
+	pow$setDefaultModel("0.80")
+	addComponent(dialog, pow,430,700,530, 300)
+	
+	#effect size
+	eff <- new(TextAreaWidget,"Cohens D")
+	eff$setDefaultModel(".5")
+	addComponent(dialog, eff,540,700,640, 300)
+	
+	
+	#alternative
+	test<- new(ComboBoxWidget,"alternative",c("two.sided", "less","greater"))
+	test$setDefaultModel("two.sided")
+	addComponent(dialog, test,650,900,750, 100)
+	
+	
+	runDialog <- function(state){
+		#print(state)
+		cmd <- "require(pwr)\npwr.t.test("
+		
+		if(state[['Sample size']] == "")
+			parameter <- "n=NULL"
+		else
+			parameter = paste("n=",state[['Sample size']],sep="")
+		cmd <- paste(cmd,parameter);
+		
+		if(state[['significance level']] == "")
+			parameter <- ",sig.level=NULL"
+		else
+			parameter = paste(",sig.level=",state[['significance level']],sep="")
+		cmd <- paste(cmd,parameter);
+		
+		if(state[['Power']] == "")
+			parameter <- ",power=NULL"
+		else
+			parameter = paste(",power=",state[['Power']],sep="")
+		cmd <- paste(cmd,parameter);
+		
+		if(state[['Cohens D']] == "")
+			parameter <- ",d=NULL"
+		else
+			parameter = paste(",d=",state[['Cohens D']],sep="")
+		cmd <- paste(cmd,parameter);
+		
+		parameter = paste(",alternative='",state[['alternative']],"'",sep="")
+		cmd <- paste(cmd,parameter);
+		
+		parameter = paste(",type='",state[['type of test']],"')",sep="")
+		cmd <- paste(cmd,parameter);
+		
+		execute(cmd)
+	}
+	
+	dialog$setRunFunction(toJava(runDialog))
+	dialog
+}
 ########################################################################
 #
 #				k-means cluster
@@ -315,7 +427,7 @@
 	algParam <- new(ParamCharacter,"algorithm","Hartigan-Wong")
 	algParam$setTitle("Type")
 	algParam$setOptions(c("Hartigan-Wong", "Lloyd", "Forgy","MacQueen"))
-	algParam $setViewType(algParam$VIEW_COMBO)
+	algParam$setViewType(algParam$VIEW_COMBO)
 	kmeansFunc$add(algParam)
 	
 	centersParam <- new(ParamNumeric,"iter.max",10)
@@ -378,7 +490,8 @@ applyModel <- function(object,data,...) data.frame(data,predict(object,data=data
 	
 	applyFunc <- new(RFunction,"applyModel")
 	
-	modelParam <- new(ParamRObject,"model")
+	modelParam <- new(ParamRObject,"object")
+	modelParam$setTitle("model")
 	modelParam$setRObjectClass("kmeans")
 	
 	dataParam <- new(ParamRObject,"data")
@@ -517,79 +630,6 @@ applyModel <- function(object,data,...) data.frame(data,predict(object,data=data
 	rfd
 }
 
-
-########################################################################
-#
-#				Factor analysis
-#
-########################################################################
-
-
-
-.makeFactorAnalysisDialog <- function(){
-	
-	.factorAnalysisCheckFunction <- function(state){
-		#make sure at least two variables are selected
-		if(length(state$variables)<2)
-			return("Please select at least two variables")
-		return("")
-	}
-	
-	.factorAnalysisRunFunction <- function(state){
-		#print(state) #a print statement is useful for debugging
-		
-		#make formula
-		form <-paste( " ~ " , state$variables[1])
-		for( var in state$variables[-1])
-			form <- paste(form,"+",var)
-		
-		#make prcomp call
-		cmd <- paste("pr.model <-prcomp(", form, ",", state$data)
-		if("Center" %in%state$Transformation)
-			cmd <- paste(cmd,", center=TRUE")
-		if("Scale" %in%state$Transformation)
-			cmd <- paste(cmd,",scale=TRUE")
-		cmd <- paste(cmd,")")
-		
-		#always print model
-		cmd <- paste (cmd,"\n","print(pr.model)")
-		
-		#output summary and plot if asked for
-		if("Summary" %in% state$Output)
-			cmd <- paste(cmd,"\n","summary(pr.model)")
-		if("Scree Plot" %in% state$Output)
-			cmd <- paste(cmd,"\n","screeplot(pr.model)")
-		
-		#execute command as if typed into console
-		execute(cmd)
-	}
-	#make dialog
-	dialog <- new(SimpleRDialog)
-	dialog$setSize(500L,400L)
-	dialog$setTitle("Factor Analysis")
-	
-	#add variable selector
-	variableSelector <- new(VariableSelectorWidget)
-	variableSelector$setTitle("data")
-	addComponent(dialog,variableSelector,10,400,850,10)
-	
-	#add a list for the variables
-	variableList<- new(VariableListWidget,variableSelector)
-	variableList$setTitle("variables")
-	addComponent(dialog, variableList,100,900,450, 420)
-	
-	#options for transforming the variables
-	transBoxes <- new(CheckBoxesWidget,"Transformation",c("Center","Scale"))
-	addComponent(dialog, transBoxes,500,900,670, 540)
-	transBoxes$setDefaultModel(c("Scale"))
-	
-	#output options
-	outBoxes <- new(CheckBoxesWidget,"Output",c("Summary","Scree Plot"))
-	addComponent(dialog, outBoxes,680,900,850, 540)
-	dialog$setCheckFunction(toJava(.factorAnalysisCheckFunction))
-	dialog$setRunFunction(toJava(.factorAnalysisRunFunction))
-	return(dialog)
-}
 
 
 
