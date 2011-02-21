@@ -24,36 +24,36 @@
 	RFunctionDialog <<- J("org.rosuda.deducer.widgets.param.RFunctionDialog")
 	
 	
-	.registerDeducerExtraDialog("Distribution quantiles",
+	.registerDialog("Distribution quantiles",
 			function() .makeDistributionDialog("quantile"))
 	
-	.registerDeducerExtraDialog("Distribution function values",
+	.registerDialog("Distribution function values",
 			function() .makeDistributionDialog("distribution"))
 	
-	.registerDeducerExtraDialog("Cumulative distribution function",
+	.registerDialog("Cumulative distribution function",
 			function() .makeDistributionDialog("CDF"))
 	
-	.registerDeducerExtraDialog("Data summary",.makeSummaryDialog)
+	.registerDialog("Data summary",.makeSummaryDialog)
 	
-	.registerDeducerExtraDialog("Paired test",.makePairedTestDialog)
+	.registerDialog("Paired test",.makePairedTestDialog)
 	
-	.registerDeducerExtraDialog("Single proportion",.makeProportionDialog)
+	.registerDialog("Single proportion",.makeProportionDialog)
 	
-	.registerDeducerExtraDialog("Single proportion: Exact",.makeExactProportionDialog)
+	.registerDialog("Single proportion: Exact",.makeExactProportionDialog)
 	
-	.registerDeducerExtraDialog("k-sample proportion",.makeNProportionDialog)
+	.registerDialog("k-sample proportion",.makeNProportionDialog)
 	
-	.registerDeducerExtraDialog("k-sample variance test",.makeEqualVarianceDialog)
+	.registerDialog("k-sample variance test",.makeEqualVarianceDialog)
 	
-	.registerDeducerExtraDialog("t-test power",.makeTTestPowerDialog)
+	.registerDialog("t-test power",.makeTTestPowerDialog)
 	
-	.registerDeducerExtraDialog("k-means cluster",.makeKMeansDialog)
+	.registerDialog("k-means cluster",.makeKMeansDialog)
 	
-	.registerDeducerExtraDialog("Apply k-means to data",.makeApplyKMeansDialog)
+	.registerDialog("Apply k-means to data",.makeApplyKMeansDialog)
 	
-	.registerDeducerExtraDialog("Hierarchical cluster",.makeHClustDialog)
+	.registerDialog("Hierarchical cluster",.makeHClustDialog)
 	
-	.registerDeducerExtraDialog("Multi-dimensional scaling",.makeMDSDialog)
+	.registerDialog("Multi-dimensional scaling",.makeMDSDialog)
 	
 	
 	gui.addSeperator <- function(){}
@@ -74,7 +74,7 @@
 	
 	addMenuItem <- function(name){
 		deducer.addMenuItem(name,,
-				".getDeducerExtrasDialog('" %+% name %+% "')$run()","Extras")
+				".getDialog('" %+% name %+% "')$run()","Extras")
 		gui.addMenuItem("Extras",name,"deducer('"%+% name %+% "')")
 	}
 	
