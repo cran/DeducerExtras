@@ -3,8 +3,9 @@
 
 
 
-.First.lib <- function(libname, pkgname){
-	if(.deducer == .jnull())
+.onLoad <- function(libname, pkgname){
+	deducerLoaded <- try(.deducer == .jnull(),silent=TRUE)
+	if(inherits(deducerLoaded,"try-error") || deducerLoaded)
 		return(NULL)
 	
 	RFunction <<- J("org.rosuda.deducer.widgets.param.RFunction")
@@ -34,8 +35,6 @@
 			function() .makeDistributionDialog("CDF"))
 	
 	.registerDialog("Data summary",.makeSummaryDialog)
-	
-	.registerDialog("Paired test",.makePairedTestDialog)
 	
 	.registerDialog("Single proportion",.makeProportionDialog)
 	
@@ -91,8 +90,6 @@
 	addMenuItem("Single proportion")
 	addMenuItem("Single proportion: Exact")
 	addMenuItem("k-sample proportion")
-	gui.addSeperator()
-	addMenuItem("Paired test")	
 	addMenuItem("k-sample variance test")
 	gui.addSeperator()
 	addMenuItem("t-test power")
