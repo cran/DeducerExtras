@@ -4,8 +4,7 @@
 
 
 .onLoad <- function(libname, pkgname){
-	deducerLoaded <- try(.deducer == .jnull(),silent=TRUE)
-	if(inherits(deducerLoaded,"try-error") || deducerLoaded)
+	if(.deducer == .jnull())
 		return(NULL)
 	
 	RFunction <<- J("org.rosuda.deducer.widgets.param.RFunction")
@@ -36,6 +35,8 @@
 	
 	.registerDialog("Data summary",.makeSummaryDialog)
 	
+	.registerDialog("Paired test",.makePairedTestDialog)
+	
 	.registerDialog("Single proportion",.makeProportionDialog)
 	
 	.registerDialog("Single proportion: Exact",.makeExactProportionDialog)
@@ -54,6 +55,7 @@
 	
 	.registerDialog("Multi-dimensional scaling",.makeMDSDialog)
 	
+	.registerDialog("Ranking analysis",.makeRankingAnalysisDialog)
 	
 	gui.addSeperator <- function(){}
 	if(.windowsGUI){
@@ -82,7 +84,7 @@
 	addMenuItem("Cumulative distribution function")
 	gui.addSeperator()
 	deducer.addMenuItem("Load Data From Package",,
-			".makePackageDataDialog()$run()","Extras")
+			"DeducerExtras:::.makePackageDataDialog()$run()","Extras")
 	gui.addMenuItem("Extras","Load data from package","deducer('"%+% "Load Data From Package" %+% "')")
 	addMenuItem("Data summary")
 	gui.addSeperator()
@@ -90,6 +92,7 @@
 	addMenuItem("Single proportion")
 	addMenuItem("Single proportion: Exact")
 	addMenuItem("k-sample proportion")
+	gui.addSeperator()
 	addMenuItem("k-sample variance test")
 	gui.addSeperator()
 	addMenuItem("t-test power")
@@ -99,6 +102,8 @@
 	addMenuItem("Hierarchical cluster")
 	gui.addSeperator()
 	addMenuItem("Multi-dimensional scaling")
+	gui.addSeperator()
+	addMenuItem("Ranking analysis")
 }
 
 

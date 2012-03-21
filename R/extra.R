@@ -569,3 +569,78 @@ applyModel <- function(object,data,...) data.frame(data,predict(object,data=data
 
 
 
+########################################################################
+#
+#				Ranking analysis
+#
+########################################################################
+
+
+.makeRankingAnalysisDialog <- function(){
+	# dialog frame
+	dialog <- new(SimpleRDialog)
+	dialog$setSize(400L,400L)
+	dialog$setTitle("Ranking analysis")
+	# add list of current variables
+	variableSelector <- new(VariableSelectorWidget)
+	variableSelector$setTitle("data")
+	addComponent(dialog,variableSelector,25,400,850,25)
+	# add list of selected variables
+	variableList <- new(VariableListWidget,variableSelector)
+	variableList$setTitle("variables")
+	addComponent(dialog,variableList,100,950,550,420)
+	variableListLabel <- new(JLabel,"selected")
+	addComponent(dialog,variableListLabel,40,950,80,600)
+	# add analysis options
+	testBoxes <- new(CheckBoxesWidget,"Tests",c("Friedman","Kendall-W"))
+	addComponent(dialog,testBoxes,600,950,850,550)
+	# add help button
+	dialog$addHelpButton("pmwiki.php?n=Main.RankingAnalysis")
+
+	# Analysis Check function
+	.rankingAnalysisCheck <- function(state){
+		# ensure that at least two variables are selected
+		if (length(state$variables)<2)
+			return("At least two variables must be selected")
+		return("")
+	}
+	
+	# Run function
+	.rankingAnalysisRun <- function(state){
+		# create object for ranking analysis
+		cmd <- "ranking.analysis <- list()\n "
+		# make ranking matrix from data frame
+		# first copy the values from the data frame
+		cmd <- paste(cmd,"ranking.analysis$rmat <- cbind(",state$variables[1],"=",state$data,"$",state$variables[1],sep="")
+		for (varname in state$variables[-1]){
+			cmd <- paste(cmd,",",varname,"=",state$data,"$",varname,sep="")
+			}
+		cmd <- paste(cmd,")\n")
+		# then convert the rows into rankings
+		cmd <- paste(cmd,"for (judge in 1:nrow(ranking.analysis$rmat)) ranking.analysis$rmat[judge,] <- rank(ranking.analysis$rmat[judge,])\n")
+		cmd <- paste(cmd,"rm(judge)\n")
+		# print summary of rankings
+		cmd <- paste(cmd,"summary(ranking.analysis$rmat)\n")
+		# Friedman test (if selected)
+		if ("Friedman" %in% state$Tests){
+			cmd <- paste(cmd,"ranking.analysis$friedman.results <- friedman.test(ranking.analysis$rmat)\n")
+			cmd <- paste(cmd,"ranking.analysis$friedman.results\n")
+		}
+		# Kendall-W test (if selected)
+		if ("Kendall-W" %in% state$Tests){
+			require(irr)
+			cmd <- paste(cmd,"ranking.analysis$kendall.results <- kendall(t(ranking.analysis$rmat),correct=TRUE)\n")	
+			cmd <- paste(cmd,"ranking.analysis$kendall.results\n")
+		}
+		# execute command
+		execute(cmd)
+	}
+
+
+	# check and run functions (defined below)
+	dialog$setCheckFunction(toJava(.rankingAnalysisCheck))
+	dialog$setRunFunction(toJava(.rankingAnalysisRun))
+	# run dialog
+	return(dialog)
+}
+
