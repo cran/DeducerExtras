@@ -57,6 +57,8 @@
 	
 	.registerDialog("Ranking analysis",.makeRankingAnalysisDialog)
 	
+	.registerDialog("3d Scatter plot",.make3dScatterPlotDialog)
+	
 	gui.addSeperator <- function(){}
 	if(.windowsGUI){
 		winMenuAdd("Extras")
@@ -104,6 +106,8 @@
 	addMenuItem("Multi-dimensional scaling")
 	gui.addSeperator()
 	addMenuItem("Ranking analysis")
+	gui.addSeperator()
+	addMenuItem("3d Scatter plot")
 }
 
 

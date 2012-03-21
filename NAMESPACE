@@ -1,6 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 import(
+  rJava,
   Deducer,
   irr
 )
-importFrom(rJava, .jnull)

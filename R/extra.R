@@ -644,3 +644,46 @@ applyModel <- function(object,data,...) data.frame(data,predict(object,data=data
 	return(dialog)
 }
 
+
+########################################################################
+#
+#				3d scatter plot
+#
+########################################################################
+
+.make3dScatterPlotDialog <- function(){
+	fun <- new(RFunction,"scatter3d")
+	
+	if(!require("rgl")){
+		install.packages("rgl")
+		library("rgl")
+	}
+	
+	var1 <- new(ParamVariable)
+	var1$setTitle("x")
+	var2 <- new(ParamVariable)
+	var2$setTitle("y")
+	var3 <- new(ParamVariable)
+	var3$setTitle("z")
+	var4 <- new(ParamVariable,"group")
+	var4$setRequired(FALSE)
+	lg <- new(ParamLogical)
+	lg$setTitle("Show surface")
+	lg$setName("surface")
+	lg$setDefaultValue(TRUE)
+	lg$setValue(FALSE)
+	
+	fun$add(var1)
+	fun$add(var2)
+	fun$add(var3)
+	fun$add(var4)
+	fun$add(lg)
+	
+	rfd <- new(RFunctionDialog, fun)
+	rfd$setLocationRelativeTo(.jnull())
+	rfd
+}
+
+
+
+
