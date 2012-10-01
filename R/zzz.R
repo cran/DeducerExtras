@@ -4,7 +4,10 @@
 
 
 .onLoad <- function(libname, pkgname){
-	if(.deducer == .jnull())
+	
+	#if deducer gui is not running, do minimal load
+	deducerLoaded <- try(.deducer == .jnull(),silent=TRUE)
+	if(inherits(deducerLoaded,"try-error") || deducerLoaded)
 		return(NULL)
 	
 	RFunction <<- J("org.rosuda.deducer.widgets.param.RFunction")
@@ -57,7 +60,9 @@
 	
 	.registerDialog("Ranking analysis",.makeRankingAnalysisDialog)
 	
-	.registerDialog("3d Scatter plot",.make3dScatterPlotDialog)
+	#.registerDialog("3d Scatter plot",.make3dScatterPlotDialog)
+	
+	.registerDialog("Open Vignette",.makeVignetteDialog)
 	
 	gui.addSeperator <- function(){}
 	if(.windowsGUI){
@@ -106,8 +111,10 @@
 	addMenuItem("Multi-dimensional scaling")
 	gui.addSeperator()
 	addMenuItem("Ranking analysis")
+	#gui.addSeperator()
+	#addMenuItem("3d Scatter plot")
 	gui.addSeperator()
-	addMenuItem("3d Scatter plot")
+	addMenuItem("Open Vignette")
 }
 
 

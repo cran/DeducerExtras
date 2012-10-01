@@ -685,5 +685,35 @@ applyModel <- function(object,data,...) data.frame(data,predict(object,data=data
 }
 
 
+########################################################################
+#
+#				Vignette browser
+#
+########################################################################
+
+# Create list of vignettes
+.makeVignetteDialog <- function(){
+	vig.results <- vignette()$results[,c("Title","Package","Item")]
+	vig.titles <- gsub("\\(source, pdf\\)|\\\"|\\\\","",vig.results[,1])
+	vig.labels <- paste0(vig.titles," (",vig.results[,2],")")
+	# Make dialog
+	dialog <- new(SimpleRDialog)
+	dialog$setTitle("Open Vignette")
+	dialog$setSize(400L,150L)
+	# Add vignette selector
+	vignetteSelector <- new(ComboBoxWidget,"Vignettes",vig.labels)
+	addComponent(dialog,vignetteSelector,50L,950L,500L,50L)
+	# Run function
+	vignetteRunFunction <- function(state){
+		sel <- which(vig.labels == state)
+		cmd <- paste0('vignette("', vig.results[sel[1],3], '", package="', vig.results[sel[1],2], '")')
+		execute(cmd)
+	}
+	# Change OkayCancel buttons (remove Reset)
+	dialog$setOkayCancel(FALSE,TRUE,dialog)
+	dialog$setRunFunction(toJava(vignetteRunFunction))
+	dialog
+}
+
 
 

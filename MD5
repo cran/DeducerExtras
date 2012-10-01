@@ -1,8 +1,8 @@
-a4966a47d0fa0a1b7f3b62c7694a0df5 *DESCRIPTION
+8ae8ac4b6c4a84f317e77d9a81eba09a *DESCRIPTION
 1dcc9731b6959214192d43d9e6e158ec *NAMESPACE
 006909a17a196ee64f48abb53aa2f2bb *R/aaa.R
-fb803422cbf7dbe173d20864fd3df0c5 *R/extra.R
+b37a9b5b1d753c58698c2cdecb6977d5 *R/extra.R
 25994b95aeec4d73b6d1e9d6db2c0179 *R/extra_distribution.R
-890baec8ab7bcf57f99b63ecda53350a *R/zzz.R
+1cb7c1a75b1f086e55c332707a68059a *R/zzz.R
 5d8e328a247491874e3025ebfbc0334b *man/DeducerExtra.Rd
 884df30864ff8430cf1153a87f5c2f58 *man/predict.kmeans.Rd
